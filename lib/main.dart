@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:nerdy_calculator/screens/calculator_screen/calculator_screen_viewmodel.dart';
 import 'package:nerdy_calculator/theme/app_theme.dart';
+import 'package:provider/provider.dart';
 
-import 'screens/calculator_screen.dart';
+import 'screens/calculator_screen/calculator_screen.dart';
 
 void main() {
-  runApp(const NerdyCalculator());
+  runApp(ChangeNotifierProvider(
+    create: (_) => CalculatorViewModel(),
+    child: const NerdyCalculator(),
+  ));
 }
 
 class NerdyCalculator extends StatelessWidget {
@@ -14,7 +19,7 @@ class NerdyCalculator extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nerdy Calculator',
-      theme: appTheme(),
+      theme: appTheme(isDark: true),
       home: const CalculatorScreen(),
     );
   }
