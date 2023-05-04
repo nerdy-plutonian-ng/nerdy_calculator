@@ -1,20 +1,54 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+import 'package:nerdy_calculator/data/history_saver.dart';
 import 'package:nerdy_calculator/data/pad_items.dart';
 import 'package:nerdy_calculator/models/pad_item_type.dart';
+import 'package:nerdy_calculator/screens/calculator_screen/calculator.dart';
 
 import '../../models/pad_item.dart';
-import 'binary_calculator.dart';
 
 class CalculatorViewModel with ChangeNotifier {
+  CalculatorViewModel() {
+    getHistory();
+  }
+
   static const _padItems = padItems;
 
-  String _display = '0';
+  final format = NumberFormat('#,##0.###');
+
+  var _operation = '';
+  String display = '';
   String _memory = '';
   String _operator = '';
-  String get display => NumberFormat('#,###.##').format(num.parse(_display));
+  String get operator => _operator;
+  bool shouldReset = false;
+
+  List<String> _history = [];
+  List<String> get history => _history;
+
+  Future<void> getHistory() async {
+    _history = await HistorySaver().getHistory();
+    notifyListeners();
+  }
+
+  Future<bool> removeFromHistory(int index) async {
+    return HistorySaver().removeFromHistory(index).then((result) {
+      if (result) {
+        getHistory();
+      }
+      return result;
+    });
+  }
+
+  addToHistory() async {
+    HistorySaver().addToHistory(_operation).then((result) {
+      if (result) {
+        getHistory().then((value) {
+          _operation = '';
+        });
+      }
+    });
+  }
 
   //getPadRows
   Map<int, List<PadItem>> getRows({bool isLandscaped = false}) {
@@ -40,74 +74,72 @@ class CalculatorViewModel with ChangeNotifier {
     return padItemsMap;
   }
 
-  clickButton(PadItem item) {
+  receiveInput(PadItem item) {
+    _operation += '${item.label} ';
     switch (item.type) {
       case PadItemType.unaryOperator:
         if (item.label == 'CE') {
-          _display = '0';
+          display = '';
           _memory = '';
           _operator = '';
-        } else if (item.label == '+/-') {
-          _display = (num.parse(_display) * -1).toString();
+          _operation = '';
         } else if (item.label == 'C') {
-          if (_display.length > 1) {
-            _display = _display.substring(0, _display.length - 1);
+          if (display.length > 1) {
+            display = display.substring(0, display.length - 1);
           } else {
-            _display = '0';
+            display = '';
           }
-        } else if (item.label == 'sin') {
-          _display =
-              sin(num.parse(_display.isEmpty ? '0' : _display) * pi / 180)
-                  .toStringAsFixed(2);
-        } else if (item.label == 'cos') {
-          _display =
-              cos(num.parse(_display.isEmpty ? '0' : _display) * pi / 180)
-                  .toStringAsFixed(2);
-        } else if (item.label == 'tan') {
-          _display =
-              tan(num.parse(_display.isEmpty ? '0' : _display) * pi / 180)
-                  .toStringAsFixed(2);
+        } else if (item.label == '+/-') {
+          if (display.isNotEmpty && display != '.') {
+            display = (num.parse(display) * -1).toString();
+          }
+        } else {
+          if (display.isNotEmpty && item.label != '.') {
+            display = format.format(Calculator.calculate(
+              format.parse(display),
+              item.label,
+            ));
+          }
         }
         break;
       case PadItemType.binaryOperator:
         if (item.label == '=') {
-          _display = BinaryCalculator.calculate(
-                  num.parse(_memory.isEmpty ? '0' : _memory),
-                  _operator,
-                  num.parse(_display.isEmpty ? '0' : _display))
-              .toStringAsFixed(2);
-          _memory = '';
-        } else {
-          if (_operator.isNotEmpty) {
-            if (_operator == '=') {
-              _memory = _display;
-            } else {
-              _display = BinaryCalculator.calculate(
-                      num.parse(_memory.isEmpty ? '0' : _memory),
-                      _operator,
-                      num.parse(_display.isEmpty ? '0' : _display))
-                  .toStringAsFixed(2);
-            }
+          if (_operator.isNotEmpty &&
+              _memory.isNotEmpty &&
+              display.isNotEmpty) {
+            display = format.format(Calculator.calculate(
+              format.parse(_memory),
+              _operator,
+              format.parse(display),
+            ));
+            _operation += display;
+            addToHistory();
+            _memory = '';
+            _operator = '';
           }
+        } else {
+          if (_operator.isNotEmpty && _memory.isNotEmpty) {
+            display = format.format(Calculator.calculate(
+              format.parse(_memory),
+              _operator,
+              format.parse(display),
+            ));
+            _memory = '';
+          }
+          _operator = item.label;
         }
-        _operator = item.label;
+
         break;
       case PadItemType.number:
-        if (_display.contains('.') && item.label == '.') {
+        if (display.contains('.') && item.label == '.') {
           break;
         }
-        if (_operator.isNotEmpty) {
-          if (_operator == '=') {
-            _operator = '';
-          } else {
-            _memory = _display;
-          }
-          _display = item.label;
+        if (operator.isNotEmpty && _memory.isEmpty) {
+          _memory = display;
+          display = item.label;
         } else {
-          _display += item.label;
+          display += item.label;
         }
-        break;
-      default:
         break;
     }
     notifyListeners();

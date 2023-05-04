@@ -16,50 +16,61 @@ class PadButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CalculatorViewModel>(
       builder: (_, state, __) {
-        return GestureDetector(
-          onTap: () {
-            state.clickButton(item);
-          },
-          child: Container(
-            height: isLandscaped ? 48 : 80,
-            width: isLandscaped ? 96 : 80,
-            decoration: BoxDecoration(
-              shape: isLandscaped ? BoxShape.rectangle : BoxShape.circle,
-              borderRadius: isLandscaped
-                  ? const BorderRadius.all(Radius.circular(32))
-                  : null,
-              color: item.type == PadItemType.number
-                  ? Theme.of(context).colorScheme.primaryContainer
-                  : item.type == PadItemType.binaryOperator
-                      ? Theme.of(context).colorScheme.tertiaryContainer
-                      : Theme.of(context).colorScheme.secondaryContainer,
-            ),
-            child: Center(
-              child: Text(
-                item.label,
-                textAlign: TextAlign.center,
-                style: isLandscaped
-                    ? Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        color: item.type == PadItemType.number
-                            ? Theme.of(context).colorScheme.onPrimaryContainer
-                            : item.type == PadItemType.binaryOperator
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .onTertiaryContainer
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .onSecondaryContainer)
-                    : Theme.of(context).textTheme.displaySmall?.copyWith(
-                          color: item.type == PadItemType.number
-                              ? Theme.of(context).colorScheme.onPrimaryContainer
-                              : item.type == PadItemType.binaryOperator
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () {
+              state.receiveInput(item);
+            },
+            child: Container(
+              height: isLandscaped ? 48 : 80,
+              width: isLandscaped ? 96 : 80,
+              decoration: BoxDecoration(
+                shape: isLandscaped ? BoxShape.rectangle : BoxShape.circle,
+                borderRadius: isLandscaped
+                    ? const BorderRadius.all(Radius.circular(32))
+                    : null,
+                color: state.operator == item.label
+                    ? Colors.white
+                    : item.type == PadItemType.number
+                        ? Theme.of(context).colorScheme.primaryContainer
+                        : item.type == PadItemType.binaryOperator
+                            ? Theme.of(context).colorScheme.tertiaryContainer
+                            : Theme.of(context).colorScheme.secondaryContainer,
+              ),
+              child: Center(
+                child: Text(
+                  item.label,
+                  textAlign: TextAlign.center,
+                  style: isLandscaped
+                      ? Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          color: state.operator == item.label
+                              ? Colors.black
+                              : item.type == PadItemType.number
                                   ? Theme.of(context)
                                       .colorScheme
-                                      .onTertiaryContainer
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .onSecondaryContainer,
-                        ),
+                                      .onPrimaryContainer
+                                  : item.type == PadItemType.binaryOperator
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onTertiaryContainer
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onSecondaryContainer)
+                      : Theme.of(context).textTheme.displaySmall?.copyWith(
+                            color: item.type == PadItemType.number
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer
+                                : item.type == PadItemType.binaryOperator
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .onSecondaryContainer,
+                          ),
+                ),
               ),
             ),
           ),

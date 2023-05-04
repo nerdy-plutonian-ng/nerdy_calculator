@@ -22,10 +22,12 @@ class CalculatorScreen extends StatelessWidget {
                 flex: 2,
                 child: Column(
                   children: [
-                    const Expanded(child: DisplayPane()),
+                    Expanded(
+                        child: DisplayPane(isLandscaped: deviceWidth > 600)),
                     Expanded(
                         flex: deviceWidth > 600 ? 3 : 2,
-                        child: Pad(isLandscaped: deviceWidth > 600)),
+                        child: FittedBox(
+                            child: Pad(isLandscaped: deviceWidth > 600))),
                   ],
                 ),
               ),

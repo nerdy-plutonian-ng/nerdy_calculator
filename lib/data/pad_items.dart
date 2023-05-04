@@ -29,7 +29,7 @@ const padItems = [
       isAdvanced: false,
       description: 'Add'),
   PadItem(
-      label: 'xX',
+      label: 'x^X',
       type: PadItemType.binaryOperator,
       isAdvanced: true,
       description: 'Power'),
