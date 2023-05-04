@@ -12,6 +12,13 @@ class CalculatorViewModel with ChangeNotifier {
     getHistory();
   }
 
+  var paneIndex = 0;
+
+  changePane() {
+    paneIndex = paneIndex == 0 ? 1 : 0;
+    notifyListeners();
+  }
+
   static const _padItems = padItems;
 
   final format = NumberFormat('#,##0.###');

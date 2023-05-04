@@ -3,16 +3,30 @@ import 'package:nerdy_calculator/screens/calculator_screen/calculator_screen_vie
 import 'package:provider/provider.dart';
 
 class HistoryWidget extends StatelessWidget {
-  const HistoryWidget({Key? key}) : super(key: key);
+  const HistoryWidget({Key? key, required this.isLandscaped}) : super(key: key);
+
+  final bool isLandscaped;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'History',
-          style: Theme.of(context).textTheme.titleLarge,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'History',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            if (!isLandscaped)
+              IconButton(
+                  onPressed: () {
+                    Provider.of<CalculatorViewModel>(context, listen: false)
+                        .changePane();
+                  },
+                  icon: const Icon(Icons.close))
+          ],
         ),
         Expanded(child: Consumer<CalculatorViewModel>(
           builder: (_, state, __) {

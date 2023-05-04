@@ -10,19 +10,22 @@ class DisplayPane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-        alignment: Alignment.bottomRight,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-          child: Consumer<CalculatorViewModel>(
-            builder: (_, state, __) {
-              return Text(state.display,
-                  style: isLandscaped
-                      ? Theme.of(context).textTheme.displayMedium
-                      : Theme.of(context).textTheme.displayLarge,
-                  textAlign: TextAlign.end);
-            },
-          ),
-        ));
+    return Container(
+      color: Colors.transparent,
+      child: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+            child: Consumer<CalculatorViewModel>(
+              builder: (_, state, __) {
+                return Text(state.display,
+                    style: isLandscaped
+                        ? Theme.of(context).textTheme.displayMedium
+                        : Theme.of(context).textTheme.displayLarge,
+                    textAlign: TextAlign.end);
+              },
+            ),
+          )),
+    );
   }
 }
