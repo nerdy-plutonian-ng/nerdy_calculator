@@ -19,7 +19,8 @@ class NerdyCalculator extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nerdy Calculator',
-      theme: appTheme(isDark: true),
+      theme: lightTheme,
+      darkTheme: darkTheme,
       home: const CalculatorScreen(),
     );
   }
