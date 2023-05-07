@@ -13,3 +13,8 @@ A minimalistic calculator
 4. Delete items in history
 5. Match device light or dark theme
 
+#Screenshots
+<p>
+<img src="screenshots/n_cal_main.png" alt="screenshot1" width="192"/><img src="screenshots/n_cal_history.png" alt="screenshot2" width="192"/><img src="screenshots/n_cal_landscape.png" alt="screenshot3" width="192"/><img src="screenshots/n_cal_main_light.png" alt="screenshot4" width="192"/>
+</p>
+
