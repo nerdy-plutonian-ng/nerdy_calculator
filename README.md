@@ -20,6 +20,6 @@ A minimalistic calculator
 <img src="screenshots/n_cal_main_light.png" alt="screenshot4" width="192"/>
 </p>
 <p>
-<img src="screenshots/n_cal_landscape.png" alt="screenshot3" width="192"/>
+<img src="screenshots/n_cal_landscape.png" alt="screenshot3" width="256"/>
 </p>
 
